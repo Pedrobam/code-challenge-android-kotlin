@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsListView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -34,7 +33,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpAdapter()
+        setUpAdapter(mViewModel.upcomingMovies.value)
         configScrollListener(recyclerView)
         observeViewModel()
     }
@@ -43,7 +42,7 @@ class HomeFragment : Fragment() {
         mViewModel.upcomingMovies.observe(this as LifecycleOwner, Observer {
             isLoading = false
             progressBar.visibility = View.GONE
-            adapter.list = it.toMutableList()
+            adapter.notifyDataSetChanged()
         })
     }
 
@@ -52,8 +51,9 @@ class HomeFragment : Fragment() {
         mViewModel.getUpComingMovies()
     }
 
-    private fun setUpAdapter() {
-        adapter = HomeAdapter { movie ->
+    private fun setUpAdapter(movies: MutableList<Movie>?) {
+        if (movies == null) return
+        adapter = HomeAdapter(movies) { movie ->
             openDetails(movie)
         }
         recyclerView.adapter = adapter

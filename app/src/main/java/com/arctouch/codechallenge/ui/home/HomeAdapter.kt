@@ -11,14 +11,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.synthetic.main.movie_item.view.*
 
-class HomeAdapter(private val onClick: (Movie) -> Unit = {}) :
+class HomeAdapter(private val list: MutableList<Movie>, private val onClick: (Movie) -> Unit = {}) :
     RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
-
-    var list: MutableList<Movie> = mutableListOf()
-        set(value) {
-            field.addAll(value)
-            notifyDataSetChanged()
-        }
 
     class ViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
