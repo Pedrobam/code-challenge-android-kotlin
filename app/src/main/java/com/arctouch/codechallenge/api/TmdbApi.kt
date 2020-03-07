@@ -18,10 +18,10 @@ interface TmdbApi {
     }
 
     @GET("genre/movie/list")
-    suspend fun genres(
+    fun genres(
         @Query("api_key") apiKey: String,
         @Query("language") language: String
-    ): GenreResponse
+    ): Observable<GenreResponse>
 
     @GET("movie/upcoming")
     suspend fun upcomingMovies(

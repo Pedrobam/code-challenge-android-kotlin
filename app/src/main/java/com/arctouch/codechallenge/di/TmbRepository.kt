@@ -9,7 +9,7 @@ import io.reactivex.Observable
 interface TmbRepository : TmdbApi
 
 class TmbRepositoryImpl(private val api: TmdbApi) : TmbRepository {
-    override suspend fun genres(apiKey: String, language: String): GenreResponse {
+    override fun genres(apiKey: String, language: String): Observable<GenreResponse> {
         return api.genres(apiKey, language)
     }
 
