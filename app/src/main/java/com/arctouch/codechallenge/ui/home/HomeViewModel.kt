@@ -25,11 +25,7 @@ class HomeViewModel : ViewModel() {
     fun getUpComingMovies() {
         page = page.plus(1)
         viewModelScope.launch {
-            val upcomingMoviesResponse = api.upcomingMovies(
-                TmdbApi.API_KEY,
-                TmdbApi.DEFAULT_LANGUAGE,
-                page
-            )
+            val upcomingMoviesResponse = api.upcomingMovies(page = page)
             val moviesWithGenres = upcomingMoviesResponse.results.map { movie ->
                 movie.copy(genres = Cache.genres.filter { movie.genreIds?.contains(it.id) == true })
             }

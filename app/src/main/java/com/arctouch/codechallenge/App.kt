@@ -42,7 +42,7 @@ class App : Application() {
     }
 
     private fun getGenres() {
-        api.genres(TmdbApi.API_KEY, TmdbApi.DEFAULT_LANGUAGE)
+        api.genres()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
