@@ -16,7 +16,6 @@ import com.arctouch.codechallenge.util.MovieImageUrlBuilder
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.synthetic.main.fragment_details.*
-import org.koin.android.viewmodel.ext.android.viewModel
 
 class DetailsFragment : Fragment() {
 
@@ -48,24 +47,39 @@ class DetailsFragment : Fragment() {
 
     private fun observeMovie() {
         mViewModel.movie.observe(this as LifecycleOwner, Observer { movie ->
-            progressBarMovie.visibility = View.GONE
-            content.visibility = View.VISIBLE
-
-            tv_title.text = movie.title
-            tv_genres.text = movie.genres?.joinToString(separator = ", ") { it.name }
-            tv_release_date.text = movie.releaseDate
-            tv_overview.text = movie.overview
+            configMovie(movie)
             configCarousel(movie)
         })
     }
 
+    private fun configMovie(movie: Movie) {
+        progressBarMovie.visibility = View.GONE
+        content.visibility = View.VISIBLE
+
+        tv_title.text = movie.title
+        tv_genres.text = context?.getString(
+            R.string.movie_genres,
+            movie.genres?.joinToString(separator = ", ") { it.name })
+        tv_release_date.text = context?.getString(
+            R.string.movie_genres, movie.releaseDate
+        )
+        tv_overview.text = movie.overview
+    }
+
     fun configCarousel(movie: Movie) {
-        images = arrayOf(movieImageUrlBuilder.buildBackdropUrl(movie.backdropPath!!),
-            movieImageUrlBuilder.buildPosterUrl(movie.posterPath!!))
+        images = arrayOf(
+            movieImageUrlBuilder.buildBackdropUrl(movie.backdropPath!!),
+            movieImageUrlBuilder.buildPosterUrl(movie.posterPath!!)
+        )
 
         carousel_view.setImageListener { position, imageView ->
             imageView.scaleType = ImageView.ScaleType.FIT_CENTER
-            imageView.setBackgroundColor(ContextCompat.getColor(context!!, R.color.colorPrimaryDark))
+            imageView.setBackgroundColor(
+                ContextCompat.getColor(
+                    context!!,
+                    R.color.colorPrimaryDark
+                )
+            )
             Glide.with(imageView)
                 .load(images[position])
                 .apply(RequestOptions().placeholder(R.drawable.ic_image_placeholder))
