@@ -2,7 +2,10 @@ package com.arctouch.codechallenge
 
 import android.app.Application
 import com.arctouch.codechallenge.api.TmdbApi
+import com.arctouch.codechallenge.data.Cache
 import com.arctouch.codechallenge.di.viewModelModule
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -25,6 +28,7 @@ class App : Application() {
             modules(listOf(viewModelModule))
         }
         api = createWebService()
+        getGenres()
     }
 
     fun createWebService(): TmdbApi {
@@ -35,5 +39,14 @@ class App : Application() {
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()
             .create(TmdbApi::class.java)
+    }
+
+    private fun getGenres() {
+        api.genres()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                Cache.cacheGenres(it.genres)
+            }
     }
 }

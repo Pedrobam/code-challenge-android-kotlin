@@ -1,5 +1,6 @@
 package com.arctouch.codechallenge.ui.home
 
+import android.nfc.tech.MifareUltralight.PAGE_SIZE
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,14 +9,19 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.arctouch.codechallenge.R
 import com.arctouch.codechallenge.model.Movie
 import kotlinx.android.synthetic.main.fragment_home.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
+
 class HomeFragment : Fragment() {
 
     private val mViewModel: HomeViewModel by viewModel()
+    private var isLoading = false
+    private lateinit var adapter: HomeAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,16 +33,30 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setUpAdapter(mViewModel.upcomingMovies.value)
+        configScrollListener(recyclerView)
+        observeViewModel()
+    }
+
+    private fun observeViewModel() {
         mViewModel.upcomingMovies.observe(this as LifecycleOwner, Observer {
-            setUpAdapter(it)
+            isLoading = false
             progressBar.visibility = View.GONE
+            adapter.notifyDataSetChanged()
         })
     }
 
-    private fun setUpAdapter(movies: List<Movie>) {
-        recyclerView.adapter = HomeAdapter(movies) { movie ->
+    private fun loadMoreMovies() {
+        isLoading = true
+        mViewModel.getUpComingMovies()
+    }
+
+    private fun setUpAdapter(movies: MutableList<Movie>?) {
+        if (movies == null) return
+        adapter = HomeAdapter(movies) { movie ->
             openDetails(movie)
         }
+        recyclerView.adapter = adapter
     }
 
     private fun openDetails(movie: Movie) {
@@ -45,5 +65,26 @@ class HomeFragment : Fragment() {
         view?.let { view ->
             Navigation.findNavController(view).navigate(direction)
         }
+    }
+
+    private fun configScrollListener(recyclerView: RecyclerView) {
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val layoutManager = recyclerView
+                    .layoutManager as LinearLayoutManager
+                val visibleItemCount: Int = layoutManager.childCount
+                val totalItemCount: Int = layoutManager.itemCount
+                val firstVisibleItemPosition: Int = layoutManager.findFirstVisibleItemPosition()
+
+                if (!isLoading) {
+                    if (visibleItemCount + firstVisibleItemPosition >= totalItemCount && firstVisibleItemPosition >= 0 && totalItemCount >= PAGE_SIZE
+                    ) {
+                        loadMoreMovies()
+                    }
+                }
+            }
+        })
     }
 }

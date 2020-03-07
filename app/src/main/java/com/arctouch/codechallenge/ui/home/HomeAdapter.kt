@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.synthetic.main.movie_item.view.*
 
-class HomeAdapter(private val movies: List<Movie>, private val onClick: (Movie) -> Unit = {}) :
+class HomeAdapter(private val list: MutableList<Movie>, private val onClick: (Movie) -> Unit = {}) :
     RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) :
@@ -36,10 +36,10 @@ class HomeAdapter(private val movies: List<Movie>, private val onClick: (Movie) 
         return ViewHolder(view)
     }
 
-    override fun getItemCount() = movies.size
+    override fun getItemCount() = list.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val movie = movies[position]
+        val movie = list[position]
         holder.itemView.setOnClickListener { onClick(movie) }
         holder.bind(movie)
     }
