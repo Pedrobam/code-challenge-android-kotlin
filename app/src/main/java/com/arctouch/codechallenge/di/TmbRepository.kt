@@ -15,10 +15,9 @@ class TmbRepositoryImpl(private val api: TmdbApi) : TmbRepository {
     override suspend fun upcomingMovies(
         apiKey: String,
         language: String,
-        page: Long,
-        region: String
+        page: Long
     ): UpcomingMoviesResponse {
-        return api.upcomingMovies(apiKey, language, page, region)
+        return api.upcomingMovies(apiKey, language, page)
     }
 
     override suspend fun movie(id: Long, apiKey: String, language: String): Movie {
