@@ -61,7 +61,7 @@ class DetailsFragment : Fragment() {
             R.string.movie_genres,
             movie.genres?.joinToString(separator = ", ") { it.name })
         tv_release_date.text = context?.getString(
-            R.string.movie_genres, movie.releaseDate
+            R.string.release_date, movie.releaseDate
         )
         tv_overview.text = movie.overview
     }
