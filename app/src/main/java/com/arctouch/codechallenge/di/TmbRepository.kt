@@ -4,6 +4,7 @@ import com.arctouch.codechallenge.api.TmdbApi
 import com.arctouch.codechallenge.model.GenreResponse
 import com.arctouch.codechallenge.model.Movie
 import com.arctouch.codechallenge.model.UpcomingMoviesResponse
+import io.reactivex.Observable
 
 interface TmbRepository : TmdbApi
 
@@ -20,7 +21,7 @@ class TmbRepositoryImpl(private val api: TmdbApi) : TmbRepository {
         return api.upcomingMovies(apiKey, language, page)
     }
 
-    override suspend fun movie(id: Long, apiKey: String, language: String): Movie {
+    override fun movie(id: Long, apiKey: String, language: String): Observable<Movie> {
         return api.movie(id, apiKey, language)
     }
 
