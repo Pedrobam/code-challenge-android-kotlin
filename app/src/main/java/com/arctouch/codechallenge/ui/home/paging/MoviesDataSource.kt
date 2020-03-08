@@ -1,4 +1,4 @@
-package com.arctouch.codechallenge.ui.home
+package com.arctouch.codechallenge.ui.home.paging
 
 import android.util.Log
 import androidx.paging.PageKeyedDataSource
