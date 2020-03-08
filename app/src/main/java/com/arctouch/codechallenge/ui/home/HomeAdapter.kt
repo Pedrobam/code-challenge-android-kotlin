@@ -3,6 +3,7 @@ package com.arctouch.codechallenge.ui.home
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.arctouch.codechallenge.R
 import com.arctouch.codechallenge.model.Movie
@@ -11,8 +12,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.synthetic.main.movie_item.view.*
 
-class HomeAdapter(private val list: MutableList<Movie>, private val onClick: (Movie) -> Unit = {}) :
-    RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
+class HomeAdapter(private val onClick: (Movie) -> Unit = {}) :
+    PagedListAdapter<Movie, HomeAdapter.ViewHolder>(DiffUtilCallBack()) {
 
     class ViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
@@ -36,11 +37,11 @@ class HomeAdapter(private val list: MutableList<Movie>, private val onClick: (Mo
         return ViewHolder(view)
     }
 
-    override fun getItemCount() = list.size
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val movie = list[position]
-        holder.itemView.setOnClickListener { onClick(movie) }
-        holder.bind(movie)
+        val movie = getItem(position)
+        movie?.let {
+            holder.itemView.setOnClickListener { onClick(movie) }
+            holder.bind(movie)
+        }
     }
 }

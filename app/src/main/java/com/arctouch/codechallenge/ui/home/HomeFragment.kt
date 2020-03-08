@@ -2,7 +2,6 @@ package com.arctouch.codechallenge.ui.home
 
 import android.app.SearchManager
 import android.content.Context
-import android.nfc.tech.MifareUltralight.PAGE_SIZE
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
@@ -10,20 +9,17 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.arctouch.codechallenge.R
 import com.arctouch.codechallenge.model.Movie
-import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_home_paged.*
 import org.koin.android.viewmodel.ext.android.viewModel
-
 
 class HomeFragment : Fragment() {
 
     private val mViewModel: HomeViewModel by viewModel()
-    private var isLoading = false
-    private var isSearching = false
-    private lateinit var adapter: HomeAdapter
+    private val homePagedListAdapter = HomeAdapter { movie ->
+        openDetails(movie)
+    }
     private lateinit var searchView: SearchView
 
     override fun onCreateView(
@@ -31,15 +27,22 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        return inflater.inflate(R.layout.fragment_home_paged, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
-        setUpAdapter(mViewModel.upcomingMovies.value)
-        configScrollListener(recyclerView)
-        observeViewModel()
+        observeLiveData()
+        initializeList()
+        setFilterText()
+    }
+
+    private fun setFilterText() {
+        val value = mViewModel.filterTextAll.value
+        if (value == null) {
+            mViewModel.filterTextAll.value = ""
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -55,14 +58,7 @@ class HomeFragment : Fragment() {
         searchView.setSearchableInfo(searchManager.getSearchableInfo(activity?.componentName))
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText.isNullOrEmpty()) {
-                    setUpAdapter(mViewModel.upcomingMovies.value)
-                    mViewModel.getUpComingMovies()
-                    isSearching = false
-                } else {
-                    isSearching = true
-                    mViewModel.searchMovies(newText)
-                }
+                mViewModel.filterTextAll.value = newText
                 return true
             }
 
@@ -72,61 +68,21 @@ class HomeFragment : Fragment() {
         })
     }
 
-    private fun observeViewModel() {
-        mViewModel.upcomingMovies.observe(this as LifecycleOwner, Observer {
-            isLoading = false
-            if (it.size > 0) {
-                progressBar.visibility = View.GONE
-            }
-            adapter.notifyDataSetChanged()
+    private fun observeLiveData() {
+        mViewModel.getMovies().observe(this as LifecycleOwner, Observer {
+            progressBar.visibility = View.GONE
+            homePagedListAdapter.submitList(it)
         })
-        mViewModel.searchLiveData.observe(this as LifecycleOwner, Observer {
-            setUpAdapter(it.toMutableList())
-        })
-    }
-
-    private fun loadMoreMovies() {
-        isLoading = true
-        mViewModel.getUpComingMovies()
-    }
-
-    private fun setUpAdapter(movies: MutableList<Movie>?) {
-        if (movies == null) return
-        adapter = HomeAdapter(movies) { movie ->
-            openDetails(movie)
-        }
-        recyclerView.adapter = adapter
     }
 
     private fun openDetails(movie: Movie) {
-        val direction =
-            HomeFragmentDirections.actionHomeFragmentToDetailsFragment(movie)
-        view?.let { view ->
-            Navigation.findNavController(view).navigate(direction)
+        val direction = HomeFragmentDirections.actionHomePagedFragmentToDetailsFragment(movie)
+        view?.let {
+            Navigation.findNavController(it).navigate(direction)
         }
     }
 
-    private fun configScrollListener(recyclerView: RecyclerView) {
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (isSearching) {
-                    return
-                }
-                val layoutManager = recyclerView
-                    .layoutManager as LinearLayoutManager
-                val visibleItemCount: Int = layoutManager.childCount
-                val totalItemCount: Int = layoutManager.itemCount
-                val firstVisibleItemPosition: Int = layoutManager.findFirstVisibleItemPosition()
-
-                if (!isLoading) {
-                    if (visibleItemCount + firstVisibleItemPosition >= totalItemCount && firstVisibleItemPosition >= 0 && totalItemCount >= PAGE_SIZE
-                    ) {
-                        loadMoreMovies()
-                    }
-                }
-            }
-        })
+    private fun initializeList() {
+        recyclerView.adapter = homePagedListAdapter
     }
 }

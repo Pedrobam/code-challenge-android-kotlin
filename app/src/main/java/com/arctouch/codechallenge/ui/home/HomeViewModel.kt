@@ -1,52 +1,40 @@
 package com.arctouch.codechallenge.ui.home
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.arctouch.codechallenge.data.Cache
+import androidx.lifecycle.*
+import androidx.paging.DataSource
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 import com.arctouch.codechallenge.di.TmbRepository
 import com.arctouch.codechallenge.model.Movie
-import com.arctouch.codechallenge.model.UpcomingMoviesResponse
-import kotlinx.coroutines.launch
-import org.koin.core.KoinComponent
 
-class HomeViewModel(private val repository: TmbRepository) : ViewModel(), KoinComponent {
 
-    private val _upcomingMovies = MutableLiveData<MutableList<Movie>>()
-    val upcomingMovies: LiveData<MutableList<Movie>> = _upcomingMovies
-    private val _searchLiveData = MutableLiveData<MutableList<Movie>>()
-    var searchLiveData: LiveData<MutableList<Movie>> = _searchLiveData
+class HomeViewModel(private val repository: TmbRepository): ViewModel() {
 
-    private var page: Long = 0
+    lateinit var postLiveData: LiveData<PagedList<Movie>>
+    var filterTextAll = MutableLiveData<String>()
 
     init {
-        _upcomingMovies.value = mutableListOf()
-        getUpComingMovies()
+        initPaging()
     }
 
-    fun getUpComingMovies() {
-        page = page.plus(1)
-        viewModelScope.launch {
-            val upcomingMoviesResponse = repository.upcomingMovies(page = page)
-            val moviesWithGenres = addGenres(upcomingMoviesResponse)
-            val list = _upcomingMovies.value
-            list?.addAll(moviesWithGenres)
-            _upcomingMovies.postValue(list)
+    private fun initPaging() {
+        val config = PagedList.Config.Builder()
+            .setPageSize(20)
+            .setEnablePlaceholders(false)
+            .build()
+        postLiveData = Transformations.switchMap(filterTextAll) { input ->
+                initializedPagesListBuilder(config, input).build()
         }
     }
 
-    fun searchMovies(query: String) {
-        viewModelScope.launch {
-            val upcomingMoviesResponse = repository.getMoviesByName(query)
-            val moviesWithGenres = addGenres(upcomingMoviesResponse)
-            _searchLiveData.postValue(moviesWithGenres.toMutableList())
-        }
-    }
+    fun getMovies(): LiveData<PagedList<Movie>> = postLiveData
 
-    private fun addGenres(upcomingMoviesResponse: UpcomingMoviesResponse): List<Movie> {
-        return upcomingMoviesResponse.results.map { movie ->
-            movie.copy(genres = Cache.genres.filter { movie.genreIds?.contains(it.id) == true })
+    private fun initializedPagesListBuilder(config: PagedList.Config, input: String): LivePagedListBuilder<Int, Movie> {
+        val dataSourceFactory = object : DataSource.Factory<Int, Movie>() {
+            override fun create(): DataSource<Int, Movie> {
+                return MoviesDataSource(repository, viewModelScope, input)
+            }
         }
+        return LivePagedListBuilder(dataSourceFactory, config)
     }
 }
