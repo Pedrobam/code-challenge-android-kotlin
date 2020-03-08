@@ -75,7 +75,9 @@ class HomeFragment : Fragment() {
     private fun observeViewModel() {
         mViewModel.upcomingMovies.observe(this as LifecycleOwner, Observer {
             isLoading = false
-            progressBar.visibility = View.GONE
+            if (it.size > 0) {
+                progressBar.visibility = View.GONE
+            }
             adapter.notifyDataSetChanged()
         })
         mViewModel.searchLiveData.observe(this as LifecycleOwner, Observer {
