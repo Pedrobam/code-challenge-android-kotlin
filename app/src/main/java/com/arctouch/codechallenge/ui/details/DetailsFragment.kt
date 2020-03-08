@@ -42,9 +42,13 @@ class DetailsFragment : Fragment() {
     private fun getMovieByArguments() {
         arguments?.let {
             val safeArgs = DetailsFragmentArgs.fromBundle(it)
-            (activity as AppCompatActivity).supportActionBar?.title = safeArgs.movie.title
+            setActionBarTitle(safeArgs.movie.title)
             mViewModel.getMovie(safeArgs.movie.id.toLong())
         }
+    }
+
+    private fun setActionBarTitle(title: String) {
+        (activity as AppCompatActivity).supportActionBar?.title = title
     }
 
     private fun observeMovie() {
