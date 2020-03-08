@@ -4,6 +4,7 @@ import android.app.SearchManager
 import android.content.Context
 import android.nfc.tech.MifareUltralight.PAGE_SIZE
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -45,17 +46,6 @@ class HomeFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.search_menu, menu)
         val searchAction = menu.findItem(R.id.search_action)
-        searchAction.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
-            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
-                isSearching = true
-                return true
-            }
-
-            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
-                isSearching = false
-                return true
-            }
-        })
         searchView = searchAction?.actionView as SearchView
         configSearchView()
         super.onCreateOptionsMenu(menu, inflater)
@@ -71,6 +61,7 @@ class HomeFragment : Fragment() {
                     mViewModel.getUpComingMovies()
                     isSearching = false
                 } else {
+                    isSearching = true
                     mViewModel.searchMovies(newText)
                 }
                 return true
