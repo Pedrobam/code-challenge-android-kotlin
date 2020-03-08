@@ -1,10 +1,11 @@
 package com.arctouch.codechallenge.ui.home
 
+import android.app.SearchManager
+import android.content.Context
 import android.nfc.tech.MifareUltralight.PAGE_SIZE
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -21,7 +22,9 @@ class HomeFragment : Fragment() {
 
     private val mViewModel: HomeViewModel by viewModel()
     private var isLoading = false
+    private var isSearching = false
     private lateinit var adapter: HomeAdapter
+    private lateinit var searchView: SearchView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,9 +36,50 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
         setUpAdapter(mViewModel.upcomingMovies.value)
         configScrollListener(recyclerView)
         observeViewModel()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.search_menu, menu)
+        val searchAction = menu.findItem(R.id.search_action)
+        searchAction.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+                isSearching = true
+                return true
+            }
+
+            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+                isSearching = false
+                return true
+            }
+        })
+        searchView = searchAction?.actionView as SearchView
+        configSearchView()
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    private fun configSearchView() {
+        val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(activity?.componentName))
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText.isNullOrEmpty()) {
+                    setUpAdapter(mViewModel.upcomingMovies.value)
+                    mViewModel.getUpComingMovies()
+                    isSearching = false
+                } else {
+                    mViewModel.searchMovies(newText)
+                }
+                return true
+            }
+
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return true
+            }
+        })
     }
 
     private fun observeViewModel() {
@@ -43,6 +87,9 @@ class HomeFragment : Fragment() {
             isLoading = false
             progressBar.visibility = View.GONE
             adapter.notifyDataSetChanged()
+        })
+        mViewModel.searchLiveData.observe(this as LifecycleOwner, Observer {
+            setUpAdapter(it.toMutableList())
         })
     }
 
@@ -72,6 +119,9 @@ class HomeFragment : Fragment() {
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
+                if (isSearching) {
+                    return
+                }
                 val layoutManager = recyclerView
                     .layoutManager as LinearLayoutManager
                 val visibleItemCount: Int = layoutManager.childCount
