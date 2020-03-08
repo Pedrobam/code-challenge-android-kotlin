@@ -9,7 +9,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 val apiModule = module {
     single { createWebService() }
-    single<TmbRepository> { TmbRepositoryImpl(get()) }
 }
 
 fun createWebService(): TmdbApi {
