@@ -7,13 +7,23 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 val apiModule = module {
-    single { createWebService() }
+    single { provideDefaultOkhttpClient() }
+    single { provideRetrofit(get()) }
 }
 
-fun createWebService(): TmdbApi {
+fun provideDefaultOkhttpClient(): OkHttpClient {
+    return OkHttpClient.Builder()
+        .addInterceptor { chain ->
+            val request = chain.request()
+            chain.proceed(request)
+        }
+        .build()
+}
+
+fun provideRetrofit(client: OkHttpClient): TmdbApi {
     return Retrofit.Builder()
         .baseUrl(TmdbApi.URL)
-        .client(OkHttpClient.Builder().build())
+        .client(client)
         .addConverterFactory(MoshiConverterFactory.create())
         .build()
         .create(TmdbApi::class.java)
