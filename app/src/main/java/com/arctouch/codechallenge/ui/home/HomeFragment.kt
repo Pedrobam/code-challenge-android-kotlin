@@ -99,11 +99,11 @@ class HomeFragment : Fragment() {
     }
 
     private fun openDetails(movie: Movie) {
-        val direction =
-            HomeFragmentDirections.actionHomeFragmentToDetailsFragment(movie)
-        view?.let { view ->
-            Navigation.findNavController(view).navigate(direction)
-        }
+//        val direction =
+//            HomeFragmentDirections.actionHomeFragmentToDetailsFragment(movie)
+//        view?.let { view ->
+//            Navigation.findNavController(view).navigate(direction)
+//        }
     }
 
     private fun configScrollListener(recyclerView: RecyclerView) {

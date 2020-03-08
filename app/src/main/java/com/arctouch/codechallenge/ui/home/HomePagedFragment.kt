@@ -8,14 +8,18 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import androidx.navigation.Navigation
 import com.arctouch.codechallenge.R
+import com.arctouch.codechallenge.model.Movie
 import kotlinx.android.synthetic.main.fragment_home.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class HomePagedFragment : Fragment() {
 
     private val mViewModel: HomePagedViewModel by viewModel()
-    private val homePagedListAdapter = HomePagedListAdapter()
+    private val homePagedListAdapter = HomePagedListAdapter { movie ->
+        openDetails(movie)
+    }
     private lateinit var searchView: SearchView
 
     override fun onCreateView(
@@ -62,6 +66,13 @@ class HomePagedFragment : Fragment() {
             progressBar.visibility = View.GONE
             homePagedListAdapter.submitList(it)
         })
+    }
+
+    private fun openDetails(movie: Movie) {
+        val direction = HomePagedFragmentDirections.actionHomePagedFragmentToDetailsFragment(movie)
+        view?.let {
+            Navigation.findNavController(it).navigate(direction)
+        }
     }
 
     private fun initializeList() {
