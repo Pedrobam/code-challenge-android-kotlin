@@ -6,13 +6,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arctouch.codechallenge.App
 import com.arctouch.codechallenge.data.Cache
+import com.arctouch.codechallenge.di.TmbRepository
 import com.arctouch.codechallenge.model.Movie
 import com.arctouch.codechallenge.model.UpcomingMoviesResponse
 import kotlinx.coroutines.launch
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(private val repository: TmbRepository) : ViewModel(), KoinComponent {
 
-    private val api = App.api
     private val _upcomingMovies = MutableLiveData<MutableList<Movie>>()
     val upcomingMovies: LiveData<MutableList<Movie>> = _upcomingMovies
     private val _searchLiveData = MutableLiveData<MutableList<Movie>>()
@@ -28,7 +30,7 @@ class HomeViewModel : ViewModel() {
     fun getUpComingMovies() {
         page = page.plus(1)
         viewModelScope.launch {
-            val upcomingMoviesResponse = api.upcomingMovies(page = page)
+            val upcomingMoviesResponse = repository.upcomingMovies(page = page)
             val moviesWithGenres = addGenres(upcomingMoviesResponse)
             val list = _upcomingMovies.value
             list?.addAll(moviesWithGenres)
@@ -38,7 +40,7 @@ class HomeViewModel : ViewModel() {
 
     fun searchMovies(query: String) {
         viewModelScope.launch {
-            val upcomingMoviesResponse = api.getMoviesByName(query)
+            val upcomingMoviesResponse = repository.getMoviesByName(query)
             val moviesWithGenres = addGenres(upcomingMoviesResponse)
             _searchLiveData.postValue(moviesWithGenres.toMutableList())
         }

@@ -3,6 +3,7 @@ package com.arctouch.codechallenge
 import android.app.Application
 import com.arctouch.codechallenge.api.TmdbApi
 import com.arctouch.codechallenge.data.Cache
+import com.arctouch.codechallenge.di.apiModule
 import com.arctouch.codechallenge.di.viewModelModule
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -25,7 +26,7 @@ class App : Application() {
         startKoin {
             androidLogger()
             androidContext(this@App)
-            modules(listOf(viewModelModule))
+            modules(listOf(apiModule, viewModelModule))
         }
         api = createWebService()
         getGenres()
