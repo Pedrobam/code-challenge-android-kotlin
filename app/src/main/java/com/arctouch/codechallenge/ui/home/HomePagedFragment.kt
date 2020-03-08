@@ -11,7 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import com.arctouch.codechallenge.R
 import com.arctouch.codechallenge.model.Movie
-import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_home_paged.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class HomePagedFragment : Fragment() {
@@ -35,7 +35,14 @@ class HomePagedFragment : Fragment() {
         setHasOptionsMenu(true)
         observeLiveData()
         initializeList()
-        mViewModel.filterTextAll.value = ""
+        setFilterText()
+    }
+
+    private fun setFilterText() {
+        val value = mViewModel.filterTextAll.value
+        if (value == null) {
+            mViewModel.filterTextAll.value = ""
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

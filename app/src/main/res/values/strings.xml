@@ -3,4 +3,5 @@
     <string name="movie_genres">Gêneros: %1s</string>
     <string name="release_date">Data de Lançamento: %1$s</string>
     <string name="search">Search</string>
+    <string name="movie_detais">Movie details</string>
 </resources>
