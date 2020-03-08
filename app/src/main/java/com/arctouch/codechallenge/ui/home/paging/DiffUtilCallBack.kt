@@ -3,7 +3,7 @@ package com.arctouch.codechallenge.ui.home.paging
 import androidx.recyclerview.widget.DiffUtil
 import com.arctouch.codechallenge.model.Movie
 
-class DiffUtilCallBack: DiffUtil.ItemCallback<Movie>() {
+class DiffUtilCallBack : DiffUtil.ItemCallback<Movie>() {
     override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
         return oldItem.id == newItem.id
     }

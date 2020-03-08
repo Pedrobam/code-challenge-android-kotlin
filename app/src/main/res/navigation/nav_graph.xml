@@ -18,7 +18,7 @@
         android:id="@+id/homePagedFragment"
         android:name="com.arctouch.codechallenge.ui.home.HomeFragment"
         android:label="@string/app_name"
-        tools:layout="@layout/fragment_home_paged" >
+        tools:layout="@layout/fragment_home_paged">
         <action
             android:id="@+id/action_homePagedFragment_to_detailsFragment"
             app:destination="@id/detailsFragment" />

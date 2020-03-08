@@ -9,7 +9,7 @@ import com.arctouch.codechallenge.model.Movie
 import com.arctouch.codechallenge.ui.home.paging.MoviesDataSource
 
 
-class HomeViewModel(private val repository: TmbRepository): ViewModel() {
+class HomeViewModel(private val repository: TmbRepository) : ViewModel() {
 
     lateinit var postLiveData: LiveData<PagedList<Movie>>
     var filterTextAll = MutableLiveData<String>()
@@ -24,13 +24,16 @@ class HomeViewModel(private val repository: TmbRepository): ViewModel() {
             .setEnablePlaceholders(false)
             .build()
         postLiveData = Transformations.switchMap(filterTextAll) { input ->
-                initializedPagesListBuilder(config, input).build()
+            initializedPagesListBuilder(config, input).build()
         }
     }
 
     fun getMovies(): LiveData<PagedList<Movie>> = postLiveData
 
-    private fun initializedPagesListBuilder(config: PagedList.Config, input: String): LivePagedListBuilder<Int, Movie> {
+    private fun initializedPagesListBuilder(
+        config: PagedList.Config,
+        input: String
+    ): LivePagedListBuilder<Int, Movie> {
         val dataSourceFactory = object : DataSource.Factory<Int, Movie>() {
             override fun create(): DataSource<Int, Movie> {
                 return MoviesDataSource(
