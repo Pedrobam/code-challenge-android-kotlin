@@ -1,5 +1,6 @@
 package com.arctouch.codechallenge.ui.home
 
+import android.util.Log
 import androidx.paging.PageKeyedDataSource
 import com.arctouch.codechallenge.data.Cache
 import com.arctouch.codechallenge.di.TmbRepository
@@ -20,28 +21,34 @@ class MoviesDataSource(
         callback: LoadInitialCallback<Int, Movie>
     ) {
         scope.launch {
-//            val upcomingMoviesResponse = repository.upcomingMovies(page = 1)
-            val upcomingMoviesResponse = if (input.isNullOrEmpty()) {
-                repository.upcomingMovies(page = 1)
-            } else {
-                repository.getMoviesByName(input, page = 1)
+            try {
+                val upcomingMoviesResponse = if (input.isNullOrEmpty()) {
+                    repository.upcomingMovies(page = 1)
+                } else {
+                    repository.getMoviesByName(input, page = 1)
+                }
+                val moviesWithGenres = addGenres(upcomingMoviesResponse)
+                callback.onResult(moviesWithGenres, null, 2)
+            } catch (e: Exception) {
+                Log.e("Error", e.localizedMessage)
             }
-            val moviesWithGenres = addGenres(upcomingMoviesResponse)
-            callback.onResult(moviesWithGenres, null, 2)
         }
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, Movie>) {
         scope.launch {
-            val page = params.key
-//            val upcomingMoviesResponse = repository.upcomingMovies(page = page.toLong())
-            val upcomingMoviesResponse = if (input.isNullOrEmpty()) {
-                repository.upcomingMovies(page = page.toLong())
-            } else {
-                repository.getMoviesByName(input, page = page.toLong())
+            try {
+                val page = params.key
+                val upcomingMoviesResponse = if (input.isNullOrEmpty()) {
+                    repository.upcomingMovies(page = page.toLong())
+                } else {
+                    repository.getMoviesByName(input, page = page.toLong())
+                }
+                val moviesWithGenres = addGenres(upcomingMoviesResponse)
+                callback.onResult(moviesWithGenres, page.plus(1))
+            } catch (e: Exception) {
+                Log.e("Error", e.localizedMessage)
             }
-            val moviesWithGenres = addGenres(upcomingMoviesResponse)
-            callback.onResult(moviesWithGenres, page.plus(1))
         }
     }
 

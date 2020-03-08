@@ -1,6 +1,7 @@
 package com.arctouch.codechallenge
 
 import android.app.Application
+import android.util.Log
 import com.arctouch.codechallenge.data.Cache
 import com.arctouch.codechallenge.di.TmbRepository
 import com.arctouch.codechallenge.di.apiModule
@@ -30,8 +31,12 @@ class App : Application(), KoinComponent {
 
     private fun getGenres() {
         GlobalScope.launch {
-            val response = repository.genres()
-            Cache.cacheGenres(response.genres)
+            try {
+                val response = repository.genres()
+                Cache.cacheGenres(response.genres)
+            } catch (e: Exception) {
+                Log.e("Error", e.localizedMessage)
+            }
         }
     }
 }

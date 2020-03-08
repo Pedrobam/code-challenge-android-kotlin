@@ -1,5 +1,6 @@
 package com.arctouch.codechallenge.ui.details
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,8 +20,12 @@ class DetailsViewModel : ViewModel(), KoinComponent {
 
     fun getMovie(movieId: Long) {
         viewModelScope.launch {
-            val movie = repository.movie(id = movieId)
-            _movie.postValue(movie)
+            try {
+                val movie = repository.movie(id = movieId)
+                _movie.postValue(movie)
+            } catch (e: Exception) {
+                Log.e("Error", e.localizedMessage)
+            }
         }
     }
 }
