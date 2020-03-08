@@ -4,27 +4,23 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.arctouch.codechallenge.App
-import com.arctouch.codechallenge.api.TmdbApi
+import com.arctouch.codechallenge.di.TmbRepository
 import com.arctouch.codechallenge.model.Movie
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
-import org.koin.ext.scope
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
-class DetailsViewModel : ViewModel() {
+class DetailsViewModel : ViewModel(), KoinComponent {
 
     private val _movie = MutableLiveData<Movie>()
     val movie: LiveData<Movie> = _movie
 
-    private val api = App.api
+    private val repository: TmbRepository by inject()
 
     fun getMovie(movieId: Long) {
-        api.movie(movieId)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                _movie.postValue(it)
-            }
+        viewModelScope.launch {
+            val movie = repository.movie(id = movieId)
+            _movie.postValue(movie)
+        }
     }
 }

@@ -3,7 +3,6 @@ package com.arctouch.codechallenge.api
 import com.arctouch.codechallenge.model.GenreResponse
 import com.arctouch.codechallenge.model.Movie
 import com.arctouch.codechallenge.model.UpcomingMoviesResponse
-import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -18,10 +17,10 @@ interface TmdbApi {
     }
 
     @GET("genre/movie/list")
-    fun genres(
+    suspend fun genres(
         @Query("api_key") apiKey: String = API_KEY,
         @Query("language") language: String = DEFAULT_LANGUAGE
-    ): Observable<GenreResponse>
+    ): GenreResponse
 
     @GET("movie/upcoming")
     suspend fun upcomingMovies(
@@ -31,11 +30,11 @@ interface TmdbApi {
     ): UpcomingMoviesResponse
 
     @GET("movie/{id}")
-    fun movie(
+    suspend fun movie(
         @Path("id") id: Long,
         @Query("api_key") apiKey: String = API_KEY,
         @Query("language") language: String = DEFAULT_LANGUAGE
-    ): Observable<Movie>
+    ): Movie
 
     @GET("search/movie")
     suspend fun getMoviesByName(

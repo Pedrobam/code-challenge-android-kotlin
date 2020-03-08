@@ -4,14 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.arctouch.codechallenge.App
 import com.arctouch.codechallenge.data.Cache
 import com.arctouch.codechallenge.di.TmbRepository
 import com.arctouch.codechallenge.model.Movie
 import com.arctouch.codechallenge.model.UpcomingMoviesResponse
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
-import org.koin.core.inject
 
 class HomeViewModel(private val repository: TmbRepository) : ViewModel(), KoinComponent {
 

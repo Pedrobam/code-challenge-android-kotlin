@@ -4,7 +4,6 @@ import android.app.SearchManager
 import android.content.Context
 import android.nfc.tech.MifareUltralight.PAGE_SIZE
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment

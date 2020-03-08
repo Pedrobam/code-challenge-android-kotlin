@@ -1,26 +1,22 @@
 package com.arctouch.codechallenge
 
 import android.app.Application
-import com.arctouch.codechallenge.api.TmdbApi
 import com.arctouch.codechallenge.data.Cache
+import com.arctouch.codechallenge.di.TmbRepository
 import com.arctouch.codechallenge.di.apiModule
 import com.arctouch.codechallenge.di.repositoryModule
 import com.arctouch.codechallenge.di.viewModelModule
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import okhttp3.OkHttpClient
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
+import org.koin.core.KoinComponent
 import org.koin.core.context.startKoin
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.moshi.MoshiConverterFactory
+import org.koin.core.inject
 
-class App : Application() {
+class App : Application(), KoinComponent {
 
-    companion object {
-        lateinit var api: TmdbApi
-    }
+    private val repository: TmbRepository by inject()
 
     override fun onCreate() {
         super.onCreate()
@@ -29,26 +25,13 @@ class App : Application() {
             androidContext(this@App)
             modules(listOf(apiModule, repositoryModule, viewModelModule))
         }
-        api = createWebService()
         getGenres()
     }
 
-    fun createWebService(): TmdbApi {
-        return Retrofit.Builder()
-            .baseUrl(TmdbApi.URL)
-            .client(OkHttpClient.Builder().build())
-            .addConverterFactory(MoshiConverterFactory.create())
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .build()
-            .create(TmdbApi::class.java)
-    }
-
     private fun getGenres() {
-        api.genres()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                Cache.cacheGenres(it.genres)
-            }
+        GlobalScope.launch {
+            val response = repository.genres()
+            Cache.cacheGenres(response.genres)
+        }
     }
 }
