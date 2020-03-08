@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arctouch.codechallenge.App
-import com.arctouch.codechallenge.api.TmdbApi
 import com.arctouch.codechallenge.data.Cache
 import com.arctouch.codechallenge.model.Movie
+import com.arctouch.codechallenge.model.UpcomingMoviesResponse
 import kotlinx.coroutines.launch
 
 class HomeViewModel : ViewModel() {
@@ -15,6 +15,9 @@ class HomeViewModel : ViewModel() {
     private val api = App.api
     private val _upcomingMovies = MutableLiveData<MutableList<Movie>>()
     val upcomingMovies: LiveData<MutableList<Movie>> = _upcomingMovies
+    private val _searchLiveData = MutableLiveData<MutableList<Movie>>()
+    var searchLiveData: LiveData<MutableList<Movie>> = _searchLiveData
+
     private var page: Long = 0
 
     init {
@@ -26,12 +29,24 @@ class HomeViewModel : ViewModel() {
         page = page.plus(1)
         viewModelScope.launch {
             val upcomingMoviesResponse = api.upcomingMovies(page = page)
-            val moviesWithGenres = upcomingMoviesResponse.results.map { movie ->
-                movie.copy(genres = Cache.genres.filter { movie.genreIds?.contains(it.id) == true })
-            }
-            val teste = _upcomingMovies.value
-            teste?.addAll(moviesWithGenres)
-            _upcomingMovies.postValue(teste)
+            val moviesWithGenres = addGenres(upcomingMoviesResponse)
+            val list = _upcomingMovies.value
+            list?.addAll(moviesWithGenres)
+            _upcomingMovies.postValue(list)
+        }
+    }
+
+    fun searchMovies(query: String) {
+        viewModelScope.launch {
+            val upcomingMoviesResponse = api.getMoviesByName(query)
+            val moviesWithGenres = addGenres(upcomingMoviesResponse)
+            _searchLiveData.postValue(moviesWithGenres.toMutableList())
+        }
+    }
+
+    private fun addGenres(upcomingMoviesResponse: UpcomingMoviesResponse): List<Movie> {
+        return upcomingMoviesResponse.results.map { movie ->
+            movie.copy(genres = Cache.genres.filter { movie.genreIds?.contains(it.id) == true })
         }
     }
 }

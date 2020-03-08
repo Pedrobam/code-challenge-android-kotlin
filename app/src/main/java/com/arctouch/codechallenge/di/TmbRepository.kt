@@ -25,4 +25,12 @@ class TmbRepositoryImpl(private val api: TmdbApi) : TmbRepository {
         return api.movie(id, apiKey, language)
     }
 
+    override suspend fun getMoviesByName(
+        title: String,
+        apiKey: String,
+        language: String
+    ): UpcomingMoviesResponse {
+        return api.getMoviesByName(title)
+    }
+
 }
