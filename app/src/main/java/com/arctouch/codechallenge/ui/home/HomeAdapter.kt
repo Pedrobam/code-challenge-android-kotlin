@@ -12,8 +12,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.synthetic.main.movie_item.view.*
 
-class HomePagedListAdapter(private val onClick: (Movie) -> Unit = {}) :
-    PagedListAdapter<Movie, HomePagedListAdapter.ViewHolder>(DiffUtilCallBack()) {
+class HomeAdapter(private val onClick: (Movie) -> Unit = {}) :
+    PagedListAdapter<Movie, HomeAdapter.ViewHolder>(DiffUtilCallBack()) {
 
     class ViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {

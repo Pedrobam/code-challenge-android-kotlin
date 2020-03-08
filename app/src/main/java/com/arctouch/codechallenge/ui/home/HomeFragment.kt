@@ -14,10 +14,10 @@ import com.arctouch.codechallenge.model.Movie
 import kotlinx.android.synthetic.main.fragment_home_paged.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
-class HomePagedFragment : Fragment() {
+class HomeFragment : Fragment() {
 
-    private val mViewModel: HomePagedViewModel by viewModel()
-    private val homePagedListAdapter = HomePagedListAdapter { movie ->
+    private val mViewModel: HomeViewModel by viewModel()
+    private val homePagedListAdapter = HomeAdapter { movie ->
         openDetails(movie)
     }
     private lateinit var searchView: SearchView
@@ -76,7 +76,7 @@ class HomePagedFragment : Fragment() {
     }
 
     private fun openDetails(movie: Movie) {
-        val direction = HomePagedFragmentDirections.actionHomePagedFragmentToDetailsFragment(movie)
+        val direction = HomeFragmentDirections.actionHomePagedFragmentToDetailsFragment(movie)
         view?.let {
             Navigation.findNavController(it).navigate(direction)
         }

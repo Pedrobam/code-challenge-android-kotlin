@@ -8,7 +8,7 @@ import com.arctouch.codechallenge.di.TmbRepository
 import com.arctouch.codechallenge.model.Movie
 
 
-class HomePagedViewModel(private val repository: TmbRepository): ViewModel() {
+class HomeViewModel(private val repository: TmbRepository): ViewModel() {
 
     lateinit var postLiveData: LiveData<PagedList<Movie>>
     var filterTextAll = MutableLiveData<String>()
