@@ -38,7 +38,7 @@ class HomeViewModel(private val repository: TmbRepository) : ViewModel(), KoinCo
 
     fun searchMovies(query: String) {
         viewModelScope.launch {
-            val upcomingMoviesResponse = repository.getMoviesByName(query)
+            val upcomingMoviesResponse = repository.getMoviesByName(query, page = 1.toLong())
             val moviesWithGenres = addGenres(upcomingMoviesResponse)
             _searchLiveData.postValue(moviesWithGenres.toMutableList())
         }
