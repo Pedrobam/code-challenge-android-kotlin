@@ -10,8 +10,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import com.arctouch.codechallenge.R
+import com.arctouch.codechallenge.databinding.FragmentHomePagedBinding
 import com.arctouch.codechallenge.model.Movie
-import kotlinx.android.synthetic.main.fragment_home_paged.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment() {
@@ -21,13 +21,15 @@ class HomeFragment : Fragment() {
         openDetails(movie)
     }
     private lateinit var searchView: SearchView
+    private lateinit var binding: FragmentHomePagedBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_home_paged, container, false)
+    ): View {
+        binding = FragmentHomePagedBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -70,7 +72,7 @@ class HomeFragment : Fragment() {
 
     private fun observeLiveData() {
         mViewModel.getMovies().observe(this as LifecycleOwner, Observer {
-            progressBar.visibility = View.GONE
+            binding.progressBar.visibility = View.GONE
             homePagedListAdapter.submitList(it)
         })
     }
@@ -83,6 +85,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun initializeList() {
-        recyclerView.adapter = homePagedListAdapter
+        binding.recyclerView.adapter = homePagedListAdapter
     }
 }

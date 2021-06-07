@@ -3,27 +3,29 @@ package com.arctouch.codechallenge.ui
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.arctouch.codechallenge.R
-import kotlinx.android.synthetic.main.activity_main.*
+import com.arctouch.codechallenge.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        setSupportActionBar(my_toolbar)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setSupportActionBar(binding.myToolbar)
         configActionBar()
     }
 
     private fun configActionBar() {
         val navController = findNavController(R.id.nav_host_fragment)
         val appBarConfiguration = AppBarConfiguration(navController.graph)
-        my_toolbar.setupWithNavController(navController, appBarConfiguration)
+        binding.myToolbar.setupWithNavController(navController, appBarConfiguration)
     }
 
     override fun onSupportNavigateUp() =
-        NavHostFragment.findNavController(nav_host_fragment).navigateUp()
+        findNavController(R.id.nav_host_fragment).navigateUp()
 }

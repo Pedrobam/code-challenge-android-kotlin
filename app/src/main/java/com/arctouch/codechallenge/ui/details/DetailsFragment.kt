@@ -11,11 +11,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.arctouch.codechallenge.R
+import com.arctouch.codechallenge.databinding.FragmentDetailsBinding
 import com.arctouch.codechallenge.model.Movie
 import com.arctouch.codechallenge.util.MovieImageUrlBuilder
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import kotlinx.android.synthetic.main.fragment_details.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class DetailsFragment : Fragment() {
@@ -23,13 +23,15 @@ class DetailsFragment : Fragment() {
     private val mViewModel: DetailsViewModel by viewModel()
     private val movieImageUrlBuilder by lazy { MovieImageUrlBuilder() }
     private lateinit var images: Array<String>
+    private lateinit var binding: FragmentDetailsBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_details, container, false)
+    ): View {
+        binding = FragmentDetailsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,17 +60,19 @@ class DetailsFragment : Fragment() {
     }
 
     private fun configMovie(movie: Movie) {
-        progressBarMovie.visibility = View.GONE
-        content.visibility = View.VISIBLE
+        binding.apply {
+            progressBarMovie.visibility = View.GONE
+            content.visibility = View.VISIBLE
 
-        tv_title.text = movie.title
-        tv_genres.text = context?.getString(
-            R.string.movie_genres,
-            movie.genres?.joinToString(separator = ", ") { it.name })
-        tv_release_date.text = context?.getString(
-            R.string.release_date, movie.releaseDate
-        )
-        tv_overview.text = movie.overview
+            tvTitle.text = movie.title
+            tvGenres.text = context?.getString(
+                R.string.movie_genres,
+                movie.genres?.joinToString(separator = ", ") { it.name })
+            tvReleaseDate.text = context?.getString(
+                R.string.release_date, movie.releaseDate
+            )
+            tvOverview.text = movie.overview
+        }
     }
 
     private fun configCarousel(movie: Movie) {
@@ -77,11 +81,11 @@ class DetailsFragment : Fragment() {
             movieImageUrlBuilder.buildPosterUrl(movie.posterPath!!)
         )
 
-        carousel_view.setImageListener { position, imageView ->
+        binding.carouselView.setImageListener { position, imageView ->
             imageView.scaleType = ImageView.ScaleType.FIT_CENTER
             imageView.setBackgroundColor(
                 ContextCompat.getColor(
-                    context!!,
+                    requireContext(),
                     R.color.colorPrimaryDark
                 )
             )
@@ -91,6 +95,6 @@ class DetailsFragment : Fragment() {
                 .into(imageView)
 
         }
-        carousel_view.pageCount = images.size
+        binding.carouselView.pageCount = images.size
     }
 }
