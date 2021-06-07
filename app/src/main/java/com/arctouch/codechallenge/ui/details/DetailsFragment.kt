@@ -10,17 +10,17 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.arctouch.codechallenge.R
 import com.arctouch.codechallenge.model.Movie
 import com.arctouch.codechallenge.util.MovieImageUrlBuilder
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.synthetic.main.fragment_details.*
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class DetailsFragment : Fragment() {
 
-    private lateinit var mViewModel: DetailsViewModel
+    private val mViewModel: DetailsViewModel by viewModel()
     private val movieImageUrlBuilder by lazy { MovieImageUrlBuilder() }
     private lateinit var images: Array<String>
 
@@ -29,7 +29,6 @@ class DetailsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mViewModel = ViewModelProvider(this)[DetailsViewModel::class.java]
         return inflater.inflate(R.layout.fragment_details, container, false)
     }
 
@@ -72,7 +71,7 @@ class DetailsFragment : Fragment() {
         tv_overview.text = movie.overview
     }
 
-    fun configCarousel(movie: Movie) {
+    private fun configCarousel(movie: Movie) {
         images = arrayOf(
             movieImageUrlBuilder.buildBackdropUrl(movie.backdropPath!!),
             movieImageUrlBuilder.buildPosterUrl(movie.posterPath!!)

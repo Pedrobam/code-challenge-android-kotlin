@@ -11,7 +11,7 @@ import com.arctouch.codechallenge.ui.home.paging.MoviesDataSource
 
 class HomeViewModel(private val repository: TmbRepository) : ViewModel() {
 
-    lateinit var postLiveData: LiveData<PagedList<Movie>>
+    private lateinit var postLiveData: LiveData<PagedList<Movie>>
     var filterTextAll = MutableLiveData<String>()
 
     init {

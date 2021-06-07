@@ -9,14 +9,11 @@ import com.arctouch.codechallenge.di.TmbRepository
 import com.arctouch.codechallenge.model.Movie
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
-import org.koin.core.inject
 
-class DetailsViewModel : ViewModel(), KoinComponent {
+class DetailsViewModel(private val repository: TmbRepository) : ViewModel(), KoinComponent {
 
     private val _movie = MutableLiveData<Movie>()
     val movie: LiveData<Movie> = _movie
-
-    private val repository: TmbRepository by inject()
 
     fun getMovie(movieId: Long) {
         viewModelScope.launch {
