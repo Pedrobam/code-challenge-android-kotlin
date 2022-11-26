@@ -17,9 +17,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class HomeFragment : Fragment() {
 
     private val mViewModel: HomeViewModel by viewModel()
-    private val homePagedListAdapter = HomeAdapter { movie ->
-        openDetails(movie)
-    }
+    private lateinit var homePagedListAdapter: HomeAdapter
     private lateinit var searchView: SearchView
     private lateinit var binding: FragmentHomePagedBinding
 
@@ -85,6 +83,9 @@ class HomeFragment : Fragment() {
     }
 
     private fun initializeList() {
+        homePagedListAdapter = HomeAdapter { movie ->
+            openDetails(movie)
+        }
         binding.recyclerView.adapter = homePagedListAdapter
     }
 }

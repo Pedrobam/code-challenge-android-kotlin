@@ -65,6 +65,8 @@ dependencies {
 
 //    implementation 'com.synnapps:carouselview:0.1.5'
 
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'
+
     //add viewmodel and lifecycle
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
