@@ -16,7 +16,7 @@ import com.arctouch.codechallenge.model.Movie
 import com.arctouch.codechallenge.util.MovieImageUrlBuilder
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class DetailsFragment : Fragment() {
 
@@ -81,20 +81,20 @@ class DetailsFragment : Fragment() {
             movieImageUrlBuilder.buildPosterUrl(movie.posterPath!!)
         )
 
-        binding.carouselView.setImageListener { position, imageView ->
-            imageView.scaleType = ImageView.ScaleType.FIT_CENTER
-            imageView.setBackgroundColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.colorPrimaryDark
-                )
-            )
-            Glide.with(imageView)
-                .load(images[position])
-                .apply(RequestOptions().placeholder(R.drawable.ic_image_placeholder))
-                .into(imageView)
-
-        }
-        binding.carouselView.pageCount = images.size
+//        binding.carouselView.setImageListener { position, imageView ->
+//            imageView.scaleType = ImageView.ScaleType.FIT_CENTER
+//            imageView.setBackgroundColor(
+//                ContextCompat.getColor(
+//                    requireContext(),
+//                    R.color.colorPrimaryDark
+//                )
+//            )
+//            Glide.with(imageView)
+//                .load(images[position])
+//                .apply(RequestOptions().placeholder(R.drawable.ic_image_placeholder))
+//                .into(imageView)
+//
+//        }
+//        binding.carouselView.pageCount = images.size
     }
 }

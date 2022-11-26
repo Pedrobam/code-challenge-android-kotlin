@@ -12,7 +12,7 @@ import androidx.navigation.Navigation
 import com.arctouch.codechallenge.R
 import com.arctouch.codechallenge.databinding.FragmentHomePagedBinding
 import com.arctouch.codechallenge.model.Movie
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment() {
 

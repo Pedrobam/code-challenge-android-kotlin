@@ -8,9 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.arctouch.codechallenge.di.TmbRepository
 import com.arctouch.codechallenge.model.Movie
 import kotlinx.coroutines.launch
-import org.koin.core.KoinComponent
 
-class DetailsViewModel(private val repository: TmbRepository) : ViewModel(), KoinComponent {
+class DetailsViewModel(private val repository: TmbRepository) : ViewModel() {
 
     private val _movie = MutableLiveData<Movie>()
     val movie: LiveData<Movie> = _movie
