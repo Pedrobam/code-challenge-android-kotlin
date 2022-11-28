@@ -1,4 +1,4 @@
-package com.arctouch.codechallenge.ui.details
+package com.arctouch.codechallenge.feature.details
 
 import android.util.Log
 import androidx.lifecycle.LiveData

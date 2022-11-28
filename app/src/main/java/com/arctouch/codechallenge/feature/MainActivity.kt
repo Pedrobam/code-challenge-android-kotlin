@@ -1,4 +1,4 @@
-package com.arctouch.codechallenge.ui
+package com.arctouch.codechallenge.feature
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

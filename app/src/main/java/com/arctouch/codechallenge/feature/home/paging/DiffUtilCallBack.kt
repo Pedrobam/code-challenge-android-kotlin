@@ -1,4 +1,4 @@
-package com.arctouch.codechallenge.ui.home.paging
+package com.arctouch.codechallenge.feature.home.paging
 
 import androidx.recyclerview.widget.DiffUtil
 import com.arctouch.codechallenge.model.Movie

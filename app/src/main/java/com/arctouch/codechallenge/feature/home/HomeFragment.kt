@@ -1,4 +1,4 @@
-package com.arctouch.codechallenge.ui.home
+package com.arctouch.codechallenge.feature.home
 
 import android.app.SearchManager
 import android.content.Context

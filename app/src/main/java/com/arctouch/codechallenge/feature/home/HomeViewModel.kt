@@ -1,4 +1,4 @@
-package com.arctouch.codechallenge.ui.home
+package com.arctouch.codechallenge.feature.home
 
 import androidx.lifecycle.*
 import androidx.paging.DataSource
@@ -6,7 +6,7 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.arctouch.codechallenge.di.TmbRepository
 import com.arctouch.codechallenge.model.Movie
-import com.arctouch.codechallenge.ui.home.paging.MoviesDataSource
+import com.arctouch.codechallenge.feature.home.paging.MoviesDataSource
 
 
 class HomeViewModel(private val repository: TmbRepository) : ViewModel() {

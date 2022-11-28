@@ -1,7 +1,7 @@
 package com.arctouch.codechallenge.di
 
-import com.arctouch.codechallenge.ui.details.DetailsViewModel
-import com.arctouch.codechallenge.ui.home.HomeViewModel
+import com.arctouch.codechallenge.feature.details.DetailsViewModel
+import com.arctouch.codechallenge.feature.home.HomeViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
