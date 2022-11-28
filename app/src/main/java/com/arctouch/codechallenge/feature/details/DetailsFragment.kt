@@ -11,7 +11,10 @@ import androidx.lifecycle.Observer
 import com.arctouch.codechallenge.R
 import com.arctouch.codechallenge.databinding.FragmentDetailsBinding
 import com.arctouch.codechallenge.model.Movie
+import com.arctouch.codechallenge.util.Loading
 import com.arctouch.codechallenge.util.MovieImageUrlBuilder
+import com.arctouch.codechallenge.util.Error
+import com.arctouch.codechallenge.util.Success
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class DetailsFragment : Fragment() {
@@ -49,10 +52,21 @@ class DetailsFragment : Fragment() {
     }
 
     private fun observeMovie() {
-        mViewModel.movie.observe(this as LifecycleOwner, Observer { movie ->
-            configMovie(movie)
-            configCarousel(movie)
-        })
+        mViewModel.movie.observe(this as LifecycleOwner) {
+            when (it) {
+                is Loading -> {
+                    //NOPY
+                }
+                is Success -> {
+                    configMovie(it.data)
+                    configCarousel(it.data)
+                }
+                is Error -> {
+                    //NOPY
+                }
+            }
+
+        }
     }
 
     private fun configMovie(movie: Movie) {
