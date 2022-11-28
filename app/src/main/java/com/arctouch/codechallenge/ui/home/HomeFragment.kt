@@ -5,7 +5,9 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
@@ -14,7 +16,7 @@ import com.arctouch.codechallenge.databinding.FragmentHomePagedBinding
 import com.arctouch.codechallenge.model.Movie
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), MenuProvider {
 
     private val mViewModel: HomeViewModel by viewModel()
     private lateinit var homePagedListAdapter: HomeAdapter
@@ -32,7 +34,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setHasOptionsMenu(true)
+        activity?.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
         observeLiveData()
         initializeList()
         setFilterText()
@@ -45,12 +47,15 @@ class HomeFragment : Fragment() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.search_menu, menu)
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.search_menu, menu)
         val searchAction = menu.findItem(R.id.search_action)
         searchView = searchAction?.actionView as SearchView
         configSearchView()
-        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        return false
     }
 
     private fun configSearchView() {
