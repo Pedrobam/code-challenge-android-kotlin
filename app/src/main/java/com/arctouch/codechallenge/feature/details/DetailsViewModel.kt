@@ -7,14 +7,14 @@ import androidx.lifecycle.viewModelScope
 import com.arctouch.codechallenge.di.TmbRepository
 import com.arctouch.codechallenge.model.Movie
 import com.arctouch.codechallenge.util.Error
-import com.arctouch.codechallenge.util.NetworkViewState
+import com.arctouch.codechallenge.util.UiState
 import com.arctouch.codechallenge.util.Success
 import kotlinx.coroutines.launch
 
 class DetailsViewModel(private val repository: TmbRepository) : ViewModel() {
 
-    private val _movie = MutableLiveData<NetworkViewState<Movie>>()
-    val movie: LiveData<NetworkViewState<Movie>> = _movie
+    private val _movie = MutableLiveData<UiState<Movie>>()
+    val movie: LiveData<UiState<Movie>> = _movie
 
     fun getMovie(movieId: Long) {
         viewModelScope.launch {
