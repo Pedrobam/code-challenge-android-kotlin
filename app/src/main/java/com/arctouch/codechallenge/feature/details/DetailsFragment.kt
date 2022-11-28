@@ -7,14 +7,14 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import com.arctouch.codechallenge.R
 import com.arctouch.codechallenge.databinding.FragmentDetailsBinding
 import com.arctouch.codechallenge.model.Movie
+import com.arctouch.codechallenge.util.Error
 import com.arctouch.codechallenge.util.Loading
 import com.arctouch.codechallenge.util.MovieImageUrlBuilder
-import com.arctouch.codechallenge.util.Error
 import com.arctouch.codechallenge.util.Success
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class DetailsFragment : Fragment() {
@@ -62,7 +62,7 @@ class DetailsFragment : Fragment() {
                     configCarousel(it.data)
                 }
                 is Error -> {
-                    //NOPY
+                    Snackbar.make(binding.root, it.message ?: requireContext().getString(R.string.network_generic_error), Snackbar.LENGTH_LONG).show()
                 }
             }
 
