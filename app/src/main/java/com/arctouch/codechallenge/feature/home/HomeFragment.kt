@@ -81,7 +81,7 @@ class HomeFragment : Fragment(), MenuProvider {
     }
 
     private fun openDetails(movie: Movie) {
-        val direction = HomeFragmentDirections.actionHomePagedFragmentToDetailsFragment(movie)
+        val direction = HomeFragmentDirections.actionHomePagedFragmentToDetailsFragment(movie.id)
         view?.let {
             Navigation.findNavController(it).navigate(direction)
         }

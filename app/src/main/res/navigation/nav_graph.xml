@@ -10,9 +10,11 @@
         android:name="com.arctouch.codechallenge.feature.details.DetailsFragment"
         android:label="@string/movie_detais"
         tools:layout="@layout/fragment_details">
+
+        <deepLink app:uri="https://sample.com/movie/{movieId}"/>
         <argument
-            android:name="movie"
-            app:argType="com.arctouch.codechallenge.model.Movie" />
+            android:name="movieId"
+            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/homePagedFragment"
